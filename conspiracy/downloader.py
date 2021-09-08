@@ -25,13 +25,13 @@ class DownloadStats():
 
     def __add__(self, other):
         result = DownloadStats()
-        result._stats = {k: self._stats.get(k, 0) + other._stats.get(k, 0) for k in DownloadResult}
+        result._stats = {k.name: self._stats.get(k.name, 0) + other._stats.get(k.name, 0) for k in DownloadResult}
         return result
 
     def __str__(self):
         total = sum(self._stats.values())
-        skipped = self._stats.get(DownloadResult.ALREADY_EXISTS.name)
-        successful = self._stats.get(DownloadResult.SUCCESS.name) + skipped
+        skipped = self._stats.get(DownloadResult.ALREADY_EXISTS.name, 0)
+        successful = self._stats.get(DownloadResult.SUCCESS.name, 0) + skipped
         return f"{successful}/{total} ({skipped} skipped)"
 
 
@@ -69,6 +69,8 @@ def download_batch(urls, directory, poolsize=5):
     # We can also accept a list of (url, name) tuples for finer control
     if not isinstance(urls[0], tuple):
         urls = [(url, filename_from_url(url, directory)) for url in urls]
+    else:
+        urls = [(url, os.path.join(directory, name)) for (url, name) in urls]
 
     results_summary = DownloadStats()
     for result in ThreadPool(poolsize).imap_unordered(download_file, urls):
