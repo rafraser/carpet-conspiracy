@@ -2,8 +2,10 @@
 
 ## Running
 
-To run an individual scraper (no processing):
+```bash
+python -m conspiracy -h
+```
 
 ```bash
-python -m conspiracy.scrapers.originalstitch
+python -m conspiracy all
 ```
