@@ -62,10 +62,16 @@ def filename_from_url(url, directory):
 
 def download_batch(urls, directory, poolsize=5):
     os.makedirs(directory, exist_ok=True)
-    urls_with_filenames = [(url, filename_from_url(url, directory)) for url in urls]
+    if len(urls) < 1:
+        return DownloadStats()
+
+    # If we're given a list of URLs, guess the filename & download those
+    # We can also accept a list of (url, name) tuples for finer control
+    if not isinstance(urls[0], tuple):
+        urls = [(url, filename_from_url(url, directory)) for url in urls]
 
     results_summary = DownloadStats()
-    for result in ThreadPool(poolsize).imap_unordered(download_file, urls_with_filenames):
+    for result in ThreadPool(poolsize).imap_unordered(download_file, urls):
         results_summary.add_result(result)
     return results_summary
 
@@ -78,4 +84,5 @@ if __name__ == "__main__":
 
     with open(args.input_file) as f:
         urls = f.read().splitlines()
-        download_batch(urls, args.output_directory)
+        results = download_batch(urls, args.output_directory)
+        print(results)
