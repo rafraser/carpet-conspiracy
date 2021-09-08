@@ -1,0 +1,11 @@
+# Cached input lists from scrapers
+cache/
+
+# Any download or output directories
+download/
+download-*/
+output/
+output-*/
+
+# Python stuff
+__pycache__
