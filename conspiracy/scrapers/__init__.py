@@ -1,7 +1,9 @@
 from conspiracy.scrapers.astrocarpet import AstroCarpetScraper
+from conspiracy.scrapers.emoji import EmojiScraper
 from conspiracy.scrapers.originalstitch import OriginalStitchScraper
 
 scrapers = {
     "astro": AstroCarpetScraper,
+    "emoji": EmojiScraper,
     "originalstitch": OriginalStitchScraper,
 }
