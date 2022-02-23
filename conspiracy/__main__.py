@@ -5,6 +5,7 @@ from conspiracy.downloader import DownloadStats
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run a given scraper")
     parser.add_argument("scrapers", help="Scraper(s) to run. Comma seperated for multiple. 'all' to run everything.")
+    parser.add_argument("--progress", help="Show a progress bar?", action="store_true")
     args = parser.parse_args()
 
     # Determine which scrapers to run
@@ -22,7 +23,7 @@ if __name__ == "__main__":
     for scraper in scrapers_to_run:
         scraper_instance = scraper()
         print(f"Starting: {scraper_instance.scraper_name}")
-        results = scraper_instance.run()
+        results = scraper_instance.run(progress=args.progress)
         print(f"[{scraper.scraper_name}] Finished: {results}")
         combined_results = combined_results + results
     print(f"[All] Finished: {combined_results}")

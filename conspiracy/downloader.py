@@ -1,9 +1,20 @@
 import argparse
+import progressbar
 import os
 import requests
 from enum import Enum
 from multiprocessing.pool import ThreadPool
 from urllib.parse import urlparse
+
+
+def progress_widgets():
+    """Progress bar widgets - used for show progress mode of the downloader
+    """
+    return [
+        progressbar.Bar(),
+        ' ', progressbar.SimpleProgress(), ' | ',
+        progressbar.AdaptiveETA()
+    ]
 
 
 class DownloadResult(Enum):
@@ -82,13 +93,14 @@ def filename_from_url(url, directory):
     return os.path.join(directory, basename)
 
 
-def download_batch(urls, directory, poolsize=5):
+def download_batch(urls, directory, poolsize=5, show_progress=False):
     """Download a batch of URLs into a given directory
 
     Args:
         urls (list): List of URLs or (URL, filename) tuples to download
         directory (str): Directory to save downloaded files to
         poolsize (int, optional): Number of threads. Defaults to 5.
+        progress (bool, optional): Render a progress bar? Defaults to False
 
     Returns:
         DownloadStats: results of all the downloads
@@ -106,7 +118,12 @@ def download_batch(urls, directory, poolsize=5):
 
     # Run all the URLs and collect results
     results_summary = DownloadStats()
-    for result in ThreadPool(poolsize).imap_unordered(download_file, urls):
+    thread_pool = ThreadPool(poolsize).imap_unordered(download_file, urls)
+    if show_progress:
+        thread_pool = progressbar.progressbar(thread_pool, widgets=progress_widgets(), max_value=len(urls))
+
+    for result in thread_pool:
+        # print('ding')
         results_summary.add_result(result)
     return results_summary
 
@@ -116,9 +133,10 @@ if __name__ == "__main__":
     parser.add_argument("input_file", help="File containing URLs to download. Each URL should be on a seperate line.")
     parser.add_argument("output_directory", help="Directory to output downloaded content to.")
     parser.add_argument("--pool", help="Number of threads to use", default=5)
+    parser.add_argument("--progress", help="Show a progress bar", action="store_true")
     args = parser.parse_args()
 
     with open(args.input_file) as f:
         urls = f.read().splitlines()
-        results = download_batch(urls, args.output_directory, poolsize=args.pool)
+        results = download_batch(urls, args.output_directory, poolsize=args.pool, show_progress=args.progress)
         print(results)

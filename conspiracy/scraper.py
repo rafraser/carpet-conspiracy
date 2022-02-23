@@ -25,14 +25,14 @@ class Scraper:
             else:
                 f.write("\n".join(urls))
 
-    def run(self, cache_urls=True):
+    def run(self, cache_urls=True, progress=False):
         urls = self.build_url_list()
 
         if cache_urls:
             self.cache_urls(urls)
 
         output_directory = os.path.join(self.output_base_directory, self.scraper_name)
-        results_summary = download_batch(urls, output_directory, poolsize=self.poolsize)
+        results_summary = download_batch(urls, output_directory, poolsize=self.poolsize, show_progress=progress)
         return results_summary
 
 
