@@ -14,6 +14,8 @@ class DownloadResult(Enum):
 
 
 class DownloadStats():
+    """Helper class used to aggregate a list of DownloadResults
+    """
     def __init__(self):
         self._stats = {result.name: 0 for result in DownloadResult}
 
@@ -35,15 +37,25 @@ class DownloadStats():
         return f"{successful}/{total} ({skipped} skipped)"
 
 
-def download_file(entry):
+def download_file(entry, max_attempts=3):
+    """Attempt to download a file
+
+    Args:
+        entry ((str, str)): Tuple containing URL and filename information
+        max_attempts (int): Number of times to retry downloading the file. Defaults to 3.
+
+    Returns:
+        DownloadResult
+    """
     url, filename = entry
     attempt_count = 0
     if os.path.exists(filename):
         return DownloadResult.ALREADY_EXISTS
 
-    while attempt_count < 5:
+    while attempt_count < max_attempts:
         r = requests.get(url, stream=True)
         if r.status_code == 200:
+            # Successful result, save to a file
             with open(filename, 'wb') as f:
                 for chunk in r:
                     f.write(chunk)
@@ -52,15 +64,35 @@ def download_file(entry):
             return DownloadResult.NOT_FOUND
         attempt_count += 1
 
+    # We did our best, but it failed for reasons other than 404 error
     return DownloadResult.FAILED
 
 
 def filename_from_url(url, directory):
+    """Given a URL, attempt to guess a filename for it
+
+    Args:
+        url (str): URL to extract filename from
+        directory (str): Directory for the filename
+
+    Returns:
+        str: Full path to a file
+    """
     basename = os.path.basename(urlparse(url).path)
     return os.path.join(directory, basename)
 
 
 def download_batch(urls, directory, poolsize=5):
+    """Download a batch of URLs into a given directory
+
+    Args:
+        urls (list): List of URLs or (URL, filename) tuples to download
+        directory (str): Directory to save downloaded files to
+        poolsize (int, optional): Number of threads. Defaults to 5.
+
+    Returns:
+        DownloadStats: results of all the downloads
+    """
     os.makedirs(directory, exist_ok=True)
     if len(urls) < 1:
         return DownloadStats()
@@ -72,6 +104,7 @@ def download_batch(urls, directory, poolsize=5):
     else:
         urls = [(url, os.path.join(directory, name)) for (url, name) in urls]
 
+    # Run all the URLs and collect results
     results_summary = DownloadStats()
     for result in ThreadPool(poolsize).imap_unordered(download_file, urls):
         results_summary.add_result(result)
@@ -82,9 +115,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Download all URLs in a given file.")
     parser.add_argument("input_file", help="File containing URLs to download. Each URL should be on a seperate line.")
     parser.add_argument("output_directory", help="Directory to output downloaded content to.")
+    parser.add_argument("--pool", help="Number of threads to use", default=5)
     args = parser.parse_args()
 
     with open(args.input_file) as f:
         urls = f.read().splitlines()
-        results = download_batch(urls, args.output_directory)
+        results = download_batch(urls, args.output_directory, poolsize=args.pool)
         print(results)
