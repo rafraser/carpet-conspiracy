@@ -22,6 +22,12 @@ To run all scrapers:
 python -m conspiracy all
 ```
 
+## Process
+
+- Scraper collects list of image URLs from the source website
+- URLs are cached to a .txt for easier retrieval
+- Downloader extracts images in parallel
+
 ## Scrapers List
 
 ### Carpets
@@ -35,6 +41,7 @@ python -m conspiracy all
 
 | Source | Description | Approx. Count |
 | ------ | ----------- | ------------- |
+| [Camira](https://www.camirafabrics.com/) | Bus, coach, and rail textiles | 550 |
 | [OriginalStitch](https://originalstitch.com/) | Printed carpets for family fun venues | 400 |
 
 ### Miscellaneous
