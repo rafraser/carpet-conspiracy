@@ -5,13 +5,13 @@ import requests
 
 
 def sanitize_name(str):
-    return str.lower().replace("-", "_").replace(" ", "_")
+    return str.lower().strip().replace("-", "_").replace(" ", "_")
 
 
 def image_url_from_href(url):
     match = re.search(r"/recolor_carpet/(\d+)/", url)
     if match:
-        return f"https://www.omegapatternworks.com/{match.group(1)}/?from=&to=&cnt=undefined"
+        return f"https://www.omegapatternworks.com/replace_colors/{match.group(1)}/?from=&to=&cnt=undefined"
 
 
 class OmegaCarpetScraper(Scraper):
@@ -33,7 +33,9 @@ class OmegaCarpetScraper(Scraper):
             url = image_url_from_href(div.find("a").get("href"))
             if not url:
                 continue
-            name = sanitize_name(div.find("h3").text) + ".png"
+
+            title_element = div.find("p", class_="carpet_name")
+            name = sanitize_name(title_element.text) + ".png"
             self._urls_cache.append((url, name))
 
         # Scrape next page if we need to

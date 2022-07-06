@@ -29,7 +29,7 @@ python -m conspiracy all
 | Source | Description | Approx. Count |
 | ------ | ----------- | ------------- |
 | [Astro Carpet Mills](https://www.astrocarpetmills.com/) | Printed carpets for family fun venues | 250 |
-| [Omega Pattern Works](https://www.omegapatternworks.com/) | Printed carpets for family fun venues | 300 |
+| [Omega Pattern Works](https://www.omegapatternworks.com/) | Printed carpets for family fun venues | 800 |
 
 ### Fabrics
 
