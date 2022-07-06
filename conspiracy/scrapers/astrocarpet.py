@@ -15,6 +15,12 @@ def image_url_from_href(url):
 
 
 class AstroCarpetScraper(Scraper):
+    """Scraper for carpet textures from Astro Carpet Mills
+    https://www.astrocarpetmills.com/
+
+    Note that this is very very similar to the Omega Pattern Works scraper!
+    This is where the carpet conspiracy originally began...
+    """
     scraper_name = "astro"
 
     def __init__(self):

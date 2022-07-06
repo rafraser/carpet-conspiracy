@@ -123,7 +123,6 @@ def download_batch(urls, directory, poolsize=5, show_progress=False):
         thread_pool = progressbar.progressbar(thread_pool, widgets=progress_widgets(), max_value=len(urls))
 
     for result in thread_pool:
-        # print('ding')
         results_summary.add_result(result)
     return results_summary
 
