@@ -1,4 +1,5 @@
 import argparse
+import csv
 import progressbar
 import os
 import requests
@@ -93,6 +94,28 @@ def filename_from_url(url, directory):
     return os.path.join(directory, basename)
 
 
+def parse_url_file(filename):
+    """Open a file and pull out URLs to download
+
+    If the file is a CSV, this will attempt to work with (url, name) tuples
+    Otherwise, the file will be treated as just a plain list of URLs - one URL per line
+
+    Args:
+        filename (str): Path to a file containing URLs to download
+    """
+    _, extension = os.path.splitext(filename)
+    print(extension)
+    urls = []
+    with open(filename, "r") as f:
+        if extension == ".csv":
+            reader = csv.reader(f, delimiter=",")
+            urls = [(line[0], line[1]) for line in reader]
+        else:
+            urls = f.read().splitlines()
+
+    return urls
+
+
 def download_batch(urls, directory, poolsize=5, show_progress=False):
     """Download a batch of URLs into a given directory
 
@@ -135,7 +158,7 @@ if __name__ == "__main__":
     parser.add_argument("--progress", help="Show a progress bar", action="store_true")
     args = parser.parse_args()
 
-    with open(args.input_file) as f:
-        urls = f.read().splitlines()
-        results = download_batch(urls, args.output_directory, poolsize=args.pool, show_progress=args.progress)
-        print(results)
+    urls = parse_url_file(args.input_file)
+    print(urls[0])
+    results = download_batch(urls, args.output_directory, poolsize=args.pool, show_progress=args.progress)
+    print(results)
