@@ -43,6 +43,7 @@ python -m conspiracy all
 | ------ | ----------- | ------------- |
 | [Camira](https://www.camirafabrics.com/) | Bus, coach, and rail textiles | 550 |
 | [OriginalStitch](https://originalstitch.com/) | Printed carpets for family fun venues | 400 |
+| [Spotlight](https://www.spotlightstores.com/sewing-fabrics/fabric-by-the-metre) | Sewing fabric | 3800 |
 
 ### Miscellaneous
 

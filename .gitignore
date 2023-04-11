@@ -6,6 +6,7 @@ download/
 download-*/
 output/
 output-*/
+debug.html
 
 # Python stuff
 __pycache__
