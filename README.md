@@ -4,29 +4,23 @@ Carpet Conspiracy is a collection of web-scrapers for various fabric patterns.
 
 ## Running
 
-Help:
+To run a specific scraper, execute the file as a Python module:
 
 ```bash
-python -m conspiracy -h
+python -m conspiracy.scrapers.camira
 ```
 
-To run a single scraper:
+To download a list of URLs, you can run the downloader script directly:
 
 ```bash
-python -m conspiracy astro
-```
-
-To run all scrapers:
-
-```bash
-python -m conspiracy all
+python -m conspiracy.downloader urls.txt output/ --progress
 ```
 
 ## Process
 
 - Scraper collects list of image URLs from the source website
-- URLs are cached to a .txt for easier retrieval
-- Downloader extracts images in parallel
+- URLs are cached to a file
+- Downloader saves images in parallel
 
 ## Scrapers List
 
@@ -43,7 +37,7 @@ python -m conspiracy all
 | ------ | ----------- | ------------- |
 | [Camira](https://www.camirafabrics.com/) | Bus, coach, and rail textiles | 550 |
 | [OriginalStitch](https://originalstitch.com/) | Printed carpets for family fun venues | 400 |
-| [Spotlight](https://www.spotlightstores.com/sewing-fabrics/fabric-by-the-metre) | Sewing fabric | 3800 |
+| [Spotlight](https://www.spotlightstores.com/sewing-fabrics/fabric-by-the-metre) | Sewing fabric | 3,800 |
 
 ### Miscellaneous
 
